@@ -1,5 +1,11 @@
 # Kafka Connect transforms for Qlik Replicate  
-    
+
+[![Last Version](https://img.shields.io/github/tag-pre/danielpetisme/kafka-connect-transforms-qlik-replicate.svg)](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/releases)
+[![Build Status](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/workflows/Build/badge.svg)](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/actions)    
+[![License](https://img.shields.io/badge/license-Apache-green.svg)](https://opensource.org/licenses/Apache-2.0)
+![Github Downloads](https://img.shields.io/github/downloads/danielpetisme/kafka-connect-transforms-qlik-replicate/total)
+![Github Start](https://img.shields.io/github/stars/danielpetisme/kafka-connect-transforms-qlik-replicate.svg)
+
 ## ExtractNewRecordState  
   
 *Disclaimer:* This work is inspired by [Debezium ExtractNewRecordState SMT](https://debezium.io/documentation/reference/1.2/configuration/event-flattening.html). We take the opportunity to thanks the whole Debezium team for the quality of their work and for making it available for all.
@@ -50,10 +56,74 @@ The structure provides all the information Qlik Replicate has.
 However, the rest of the Kafka ecosystem usually expect the data in a more simple format like:  
 ```json
 {  
- "id": "1",
- "email": "john@doe.com
+    "id": 1,
+    "email": "john@doe.com"
 }  
 ```   
+
+## Getting Started  
+ 
+Download the latest jar on the [release page](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/releases).
+
+The SMT jar should be present in the `plugin.path` with the other Kafka connector/SMT jars.
+
+The configuration of the `ExtractNewRecordState` SMT is made in your Kafka Connect sink connector's configuration.
+
+Given the following Qlik Replicate change event message:
+```
+{
+	"data": null,
+	"beforeData": {
+		"id": 1,
+		"email": "john@doe.com"
+	},
+	"headers": {
+		"operation": "DELETE",
+		"changeSequence": "100",
+		"timestamp": 1000,
+		"streamPosition": "1",
+		"transactionId": "1",
+		"changeMask": "1",
+		"columnMask": "1",
+		"transactionEventCounter": 1,
+		"transactionLastEvent": true
+	}
+}
+```
+
+We can use the following configuration
+```  
+"transforms": "extract",
+"transforms.extract.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ExtractNewRecordState",
+"transforms.extract.delete.mode": "soft",
+"transforms.extract.add.fields": "operation,timestamp",
+"transforms.extract.add.headers": "transactionId"
+```  
+
+**`delete.mode=soft`**
+
+The SMT adds `__deleted` and set it to true whenever a delete operation is processed.
+
+**`add.fields=operation,timestamp`**
+
+Adds change event metadata (coming from the `headers` property). 
+It will add a `__operation` and `__timestamp` field to teh simplified Kafka record.
+
+**`add.headers=transactionId`**
+
+Same as `add.fields` but with the Kafka record headers.
+
+We will obtain the following Kafka message:
+```
+{  
+    "id": "1",
+    "email": "john@doe.com
+    "__deleted": "true",
+    "__operation": "DELETE",
+    "__timestamp": "1000"
+}
+```
+and a header `"__transactionId: "1"`.
 
 ## How it works  
 
@@ -145,68 +215,6 @@ the SMT can process  messages with and without schemas.
  
 Note: Schemas are mandatory for some components like `JdbcSinkConnector` for instance...
  
-## Configuration  
- 
-Note: The SMT jar should be present in the `plugin.path` with the other Kafka connector/SMT jars.
-
-The configuration of the `ExtractNewRecordState` SMT is made in your Kafka Connect sink connector's configuration.
-
-Given the following Qlik Replicate change event message:
-```
-{
-	"data": null,
-	"beforeData": {
-		"id": 1,
-		"email": "john@doe.com"
-	},
-	"headers": {
-		"operation": "DELETE",
-		"changeSequence": "100",
-		"timestamp": 1000,
-		"streamPosition": "1",
-		"transactionId": "1",
-		"changeMask": "1",
-		"columnMask": "1",
-		"transactionEventCounter": 1,
-		"transactionLastEvent": true
-	}
-}
-```
-
-We can use the following configuration
-```  
-"transforms": "extract",
-"transforms.extract.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ExtractNewRecordState",
-"transforms.extract.delete.mode": "soft",
-"transforms.extract.add.fields": "operation,timestamp",
-"transforms.extract.add.headers": "transactionId"
-```  
-
-**`delete.mode=soft`**
-
-The SMT adds `__deleted` and set it to true whenever a delete operation is processed.
-
-**`add.fields=operation,timestamp`**
-
-Adds change event metadata (coming from the `headers` property). 
-It will add a `__operation` and `__timestamp` field to teh simplified Kafka record.
-
-**`add.headers=transactionId`**
-
-Same as `add.fields` but with the Kafka record headers.
-
-We will obtain the following Kafka message:
-```
-{  
-  "id": "1",
-  "email": "john@doe.com
-  "__deleted": "true",
-  "__operation": "DELETE",
-  "__timestamp": "1000"
-}
-```
-and a header `"__transactionId: "1"`.
-
 ## Properties
 
 |Property name|Default| Description|
