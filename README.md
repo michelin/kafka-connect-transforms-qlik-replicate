@@ -1,10 +1,10 @@
 # Kafka Connect transforms for Qlik Replicate  
 
-[![Last Version](https://img.shields.io/github/tag-pre/danielpetisme/kafka-connect-transforms-qlik-replicate.svg)](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/releases)
-[![Build Status](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/workflows/Build/badge.svg)](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/actions)    
+[![Last Version](https://img.shields.io/github/tag-pre/michelin/kafka-connect-transforms-qlik-replicate.svg)](https://github.com/michelin/kafka-connect-transforms-qlik-replicate/releases)
+[![Build Status](https://github.com/michelin/kafka-connect-transforms-qlik-replicate/workflows/Build/badge.svg)](https://github.com/michelin/kafka-connect-transforms-qlik-replicate/actions)    
 [![License](https://img.shields.io/badge/license-Apache-green.svg)](https://opensource.org/licenses/Apache-2.0)
-![Github Downloads](https://img.shields.io/github/downloads/danielpetisme/kafka-connect-transforms-qlik-replicate/total)
-![Github Start](https://img.shields.io/github/stars/danielpetisme/kafka-connect-transforms-qlik-replicate.svg)
+![Github Downloads](https://img.shields.io/github/downloads/michelin/kafka-connect-transforms-qlik-replicate/total)
+![Github Start](https://img.shields.io/github/stars/michelin/kafka-connect-transforms-qlik-replicate.svg)
 
 ## ExtractNewRecordState  
   
@@ -63,7 +63,7 @@ However, the rest of the Kafka ecosystem usually expect the data in a more simpl
 
 ## Getting Started  
  
-Download the latest jar on the [release page](https://github.com/danielpetisme/kafka-connect-transforms-qlik-replicate/releases).
+Download the latest jar on the [release page](https://github.com/michelin/kafka-connect-transforms-qlik-replicate/releases).
 
 The SMT jar should be present in the `plugin.path` with the other Kafka connector/SMT jars.
 
