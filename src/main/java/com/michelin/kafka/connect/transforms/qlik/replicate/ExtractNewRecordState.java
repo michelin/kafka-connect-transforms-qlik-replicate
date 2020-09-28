@@ -2,6 +2,7 @@ package com.michelin.kafka.connect.transforms.qlik.replicate;
 
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.ConnectRecord;
+import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.transforms.ExtractField;
 import org.apache.kafka.connect.transforms.InsertField;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class ExtractNewRecordState<R extends ConnectRecord<R>> implements Transformation<R> {
 
@@ -106,7 +108,8 @@ public class ExtractNewRecordState<R extends ConnectRecord<R>> implements Transf
                 data = fieldHandler.apply(data);
             }
         }
-
+        //skip if no schema
+        data = convertDate(data);
         if (!additionalHeaders.isEmpty()) {
             for (String header : additionalHeaders) {
                 String headerName = METADATA_FIELD_PREFIX + header;
@@ -122,6 +125,30 @@ public class ExtractNewRecordState<R extends ConnectRecord<R>> implements Transf
 
         return data;
 
+    }
+
+    private R convertDate(R record) {
+        if (record.value() == null) {
+            return record;
+        }
+        Struct transformedRecord = ((Struct) record.value());
+        for (Field field : record.valueSchema().fields()) {
+            if (field.schema().parameters() != null && field.schema().parameters().containsKey("logicalType") && field.schema().parameters().get("logicalType").equalsIgnoreCase("timestamp-micros")) {
+                long timestampMillis = TimeUnit.MICROSECONDS.toMillis(transformedRecord.getInt64(field.name()));
+                transformedRecord.put(field.name(), timestampMillis);
+            }
+        }
+
+        return record.newRecord(
+            record.topic(),
+            record.kafkaPartition(),
+            record.keySchema(),
+            record.key(),
+            record.valueSchema(),
+            transformedRecord,
+            record.timestamp(),
+            record.headers()
+        );
     }
 
     private Object getChangeEventHeader(R record, String name) {
