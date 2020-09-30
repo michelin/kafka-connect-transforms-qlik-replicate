@@ -5,7 +5,7 @@
 
     <groupId>com.michelin.kafka.connect.transforms</groupId>
     <artifactId>kafka-connect-transforms-qlik-replicate</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Kafka Connect SMT for Qlik Replicate</name>
 
@@ -15,7 +15,7 @@
         <connection>scm:git:git@github.com:danielpetisme/kafka-connect-transforms-qlik-replicate.git</connection>
         <developerConnection>scm:git:git@github.com:danielpetisme/kafka-connect-transforms-qlik-replicate.git
         </developerConnection>
-        <tag>1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
