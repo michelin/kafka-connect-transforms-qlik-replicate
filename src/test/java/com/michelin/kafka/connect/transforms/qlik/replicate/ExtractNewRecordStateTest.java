@@ -333,38 +333,6 @@ public class ExtractNewRecordStateTest {
         assertThat(transformedRecord.headers().lastWithName("__transactionLastEvent").value()).isEqualTo(false);
     }
 
-    @Test
-    public void testDate() {
-        smt.configure(Collections.emptyMap());
-        Schema tableSchemaWithTimestampMicros = SchemaBuilder.struct()
-            .field("id", SchemaBuilder.int8())
-            .field("timestamp", SchemaBuilder.int64().parameter("type", "long").parameter("logicalType", "timestamp-micros"))
-            .optional()
-            .build();
-
-        Struct recordWithTimestampMicros = new Struct(tableSchemaWithTimestampMicros)
-            .put("id", (byte) 1)
-            .put("timestamp", 1126196428000000L);
-
-        Schema changeEventSchema = SchemaBuilder.struct()
-            .field(DATA, tableSchemaWithTimestampMicros)
-            .field(BEFORE_DATA, tableSchemaWithTimestampMicros)
-            .field(HEADERS, HEADER_SCHEMA)
-            .build();
-
-        Struct changeEvent = new Struct(changeEventSchema)
-            .put(BEFORE_DATA, null)
-            .put(DATA, recordWithTimestampMicros)
-            .put(HEADERS, headers("INSERT"));
-
-        SourceRecord record = new SourceRecord(
-            null, null, "test", 0, changeEventSchema, changeEvent
-        );
-        SourceRecord transformedRecord = smt.apply(record);
-        assertThat(((Struct) transformedRecord.value()).get("timestamp")).isEqualTo(1126196428000L);
-//        assertThat((transformedRecord.valueSchema()).field("timestamp").schema().parameters().get("logicalType")).isEqualToIgnoringCase("timestamp-millis");
-    }
-
     public static Struct headers(String operation) {
         return new Struct(HEADER_SCHEMA)
             .put(OPERATION, operation)

@@ -28,13 +28,14 @@ import java.util.TimeZone;
 import static org.apache.kafka.connect.transforms.util.Requirements.requireMap;
 import static org.apache.kafka.connect.transforms.util.Requirements.requireStructOrNull;
 
-public abstract class TimestampConverter<R extends ConnectRecord<R>> implements Transformation<R> {
+// Reuse of https://github.com/apache/kafka/blob/trunk/connect/transforms/src/main/java/org/apache/kafka/connect/transforms/TimestampConverter.java
+public abstract class ReplicateTimestampConverter<R extends ConnectRecord<R>> implements Transformation<R> {
 
     public static final String OVERVIEW_DOC =
         "Convert timestamps between different formats such as Unix epoch, strings, and Connect Date/Timestamp types."
             + "Applies to individual fields or to the entire value."
-            + "<p/>Use the concrete transformation type designed for the record key (<code>" + TimestampConverter.Key.class.getName() + "</code>) "
-            + "or value (<code>" + TimestampConverter.Value.class.getName() + "</code>).";
+            + "<p/>Use the concrete transformation type designed for the record key (<code>" + ReplicateTimestampConverter.Key.class.getName() + "</code>) "
+            + "or value (<code>" + ReplicateTimestampConverter.Value.class.getName() + "</code>).";
 
     public static final String FIELD_CONFIG = "field";
     private static final String FIELD_DEFAULT = "";
@@ -128,7 +129,7 @@ public abstract class TimestampConverter<R extends ConnectRecord<R>> implements 
 
             @Override
             public Long toType(Config config, Date orig) {
-                return Timestamp.fromLogical(Timestamp.SCHEMA, orig);
+                return TimestampMicros.fromLogical(TimestampMicros.SCHEMA, orig);
             }
         });
 
@@ -268,7 +269,7 @@ public abstract class TimestampConverter<R extends ConnectRecord<R>> implements 
     public void close() {
     }
 
-    public static class Key<R extends ConnectRecord<R>> extends TimestampConverter<R> {
+    public static class Key<R extends ConnectRecord<R>> extends ReplicateTimestampConverter<R> {
         @Override
         protected Schema operatingSchema(R record) {
             return record.keySchema();
@@ -285,7 +286,7 @@ public abstract class TimestampConverter<R extends ConnectRecord<R>> implements 
         }
     }
 
-    public static class Value<R extends ConnectRecord<R>> extends TimestampConverter<R> {
+    public static class Value<R extends ConnectRecord<R>> extends ReplicateTimestampConverter<R> {
         @Override
         protected Schema operatingSchema(R record) {
             return record.valueSchema();

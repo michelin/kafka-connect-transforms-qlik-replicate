@@ -3,6 +3,7 @@ package org.apache.kafka.connect.data;
 import org.apache.kafka.connect.errors.DataException;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +22,7 @@ public class TimestampMicros {
         if (!"org.apache.kafka.connect.data.TimestampMicros".equals(schema.name())) {
             throw new DataException("Requested conversion of TimestampMicros object but the schema does not match.");
         } else {
-            return value.getTime();
+            return ChronoUnit.MILLIS.between(Instant.EPOCH, value.toInstant());
         }
     }
 
@@ -29,8 +30,7 @@ public class TimestampMicros {
         if (!"org.apache.kafka.connect.data.TimestampMicros".equals(schema.name())) {
             throw new DataException("Requested conversion of TimestampMicros object but the schema does not match.");
         } else {
-            Instant epochMicros = Instant.ofEpochSecond(TimeUnit.MICROSECONDS.toSeconds(value), TimeUnit.MICROSECONDS.toNanos(Math.floorMod(value, TimeUnit.SECONDS.toMicros(1))));
-            return Date.from(epochMicros);
+            return Date.from(Instant.EPOCH.plus(value, ChronoUnit.MICROS));
         }
     }
 }
