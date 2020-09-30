@@ -232,6 +232,22 @@ The `ReplicateTimestampConverter` SMT is a duplication of `TimestampComverter` w
 
 Note: This SMT is very Qlik Replicate specific and should be removed when `TimestampConverter` will support microseconds. 
 
+
+## Getting started
+Is likely probable you want to chain the Qlik Replicate state extraction and date conversion. This is a sample configuration:
+```
+"transforms": "extract,convertBirthDate, convertCreationDate",
+"transforms.extract.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ExtractNewRecordState",
+"transforms.convertBirthDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter",
+"transforms.convertBirthDate.field": "person_birthday",
+"transforms.convertBirthDate.target.type": "Timestamp",
+"transforms.convertCreationDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter",
+"transforms.convertCreationDate.field": "person_creation_date",
+"transforms.convertCreationDate.target.type": "Date"
+```
+
+Notice that each date/time field conversion has to be independently defined.
+
 ## Properties
 See the official documentation
 https://docs.confluent.io/current/connect/transforms/timestampconverter.html
