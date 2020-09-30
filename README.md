@@ -223,6 +223,18 @@ Note: Schemas are mandatory for some components like `JdbcSinkConnector` for ins
 |`add.fields`|`""`| Adds a field based on change event metadata (coming exclusively from the `headers` property).<br>The field name will be prefixed by `__` (double underscores). The field value will be converted to string. |
 |`add.headers`|`""`|Adds a header based on change event metadata (coming exclusively from the `headers` property).<br>The header name will be prefixed by `__` (double underscores).|
 
+## ReplicateTimestampConverter
+
+### Microseconds management
+Qlik replicate use a microseconds precision when representing a timestamp. 
+As for now, the [`TimestampComverter`](https://docs.confluent.io/current/connect/transforms/timestampconverter.html) only supports the milliseconds precision.
+The `ReplicateTimestampConverter` SMT is a duplication of `TimestampComverter` which use a microseconds as default timestamp precsion rather than milliseconds.
+
+Note: This SMT is very Qlik Replicate specific and should be removed when `TimestampConverter` will support microseconds. 
+
+## Properties
+See the official documentation
+https://docs.confluent.io/current/connect/transforms/timestampconverter.html
 
 ## How to release
 

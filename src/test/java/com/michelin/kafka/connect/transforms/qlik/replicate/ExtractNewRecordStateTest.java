@@ -346,4 +346,6 @@ public class ExtractNewRecordStateTest {
             .put(TRANSACTION_LAST_EVENT, false);
     }
 
+
+
 }

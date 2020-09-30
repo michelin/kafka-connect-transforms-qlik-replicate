@@ -106,7 +106,6 @@ public class ExtractNewRecordState<R extends ConnectRecord<R>> implements Transf
                 data = fieldHandler.apply(data);
             }
         }
-
         if (!additionalHeaders.isEmpty()) {
             for (String header : additionalHeaders) {
                 String headerName = METADATA_FIELD_PREFIX + header;
