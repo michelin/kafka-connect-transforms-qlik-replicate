@@ -238,10 +238,10 @@ Is likely probable you want to chain the Qlik Replicate state extraction and dat
 ```
 "transforms": "extract,convertBirthDate, convertCreationDate",
 "transforms.extract.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ExtractNewRecordState",
-"transforms.convertBirthDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter",
+"transforms.convertBirthDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter$Value",
 "transforms.convertBirthDate.field": "person_birthday",
 "transforms.convertBirthDate.target.type": "Timestamp",
-"transforms.convertCreationDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter",
+"transforms.convertCreationDate.type": "com.michelin.kafka.connect.transforms.qlik.replicate.ReplicateTimestampConverter$Value",
 "transforms.convertCreationDate.field": "person_creation_date",
 "transforms.convertCreationDate.target.type": "Date"
 ```
