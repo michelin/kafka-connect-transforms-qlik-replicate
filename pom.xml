@@ -24,7 +24,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-release-plugin.version>3.0.0-M1</maven-release-plugin.version>
-        <assertj.version>3.16.1</assertj.version>
+        <assertj.version>3.27.7</assertj.version>
         <junit.version>5.6.2</junit.version>
         <kafka.version>2.6.0</kafka.version>
         <logback.version>1.2.3</logback.version>
